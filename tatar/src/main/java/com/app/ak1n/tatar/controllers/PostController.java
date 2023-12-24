@@ -3,6 +3,7 @@ package com.app.ak1n.tatar.controllers;
 import com.app.ak1n.tatar.entities.Post;
 import com.app.ak1n.tatar.requests.PostCreateRequest;
 import com.app.ak1n.tatar.requests.PostUpdateRequest;
+import com.app.ak1n.tatar.responses.PostResponse;
 import com.app.ak1n.tatar.services.PostService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getAllPosts(@RequestParam Optional<Long> userId){
+    public List<PostResponse> getAllPosts(@RequestParam Optional<Long> userId){
         return postService.getAll(userId);
     }
 

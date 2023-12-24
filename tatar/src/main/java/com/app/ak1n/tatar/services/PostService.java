@@ -6,10 +6,12 @@ import com.app.ak1n.tatar.repository.PostRepository;
 import com.app.ak1n.tatar.requests.PostCreateRequest;
 import com.app.ak1n.tatar.requests.PostUpdateRequest;
 
+import com.app.ak1n.tatar.responses.PostResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -21,11 +23,17 @@ public class PostService {
         this.postRepository = postRepository;
         this.userService=userService;
         }
-        public List<Post> getAll(Optional<Long> userId){
-        if(userId.isPresent()){
-            return postRepository.findByUserId(userId);
-        }
-        else return postRepository.findAll();
+        public List<PostResponse> getAll(Optional<Long> userId){
+            List<Post> list;
+
+            if(userId.isPresent()){
+            list = postRepository.findByUserId(userId);
+            }else {
+            list = postRepository.findAll();
+            }
+            return list.stream()
+                    .map(post -> new PostResponse(post))
+                    .collect(Collectors.toList());
         }
 
         public Post getPostById(Long postId) {
