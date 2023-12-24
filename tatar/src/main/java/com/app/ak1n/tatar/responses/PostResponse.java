@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class PostResponse {
-//attributess
+
 
     Long id;
     Long userId;
