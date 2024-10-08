@@ -8,10 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class TatarApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(TatarApplication.class, args);
 	}
-
 
 }
