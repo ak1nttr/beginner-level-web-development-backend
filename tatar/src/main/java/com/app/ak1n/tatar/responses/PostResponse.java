@@ -18,7 +18,7 @@ public class PostResponse {
     public PostResponse(Post entity){
         this.id = entity.getId();
         this.userId = entity.getUser().getId();
-        this.userName = entity.getUser().getUserName();
+        this.userName = entity.getUser().getUsername();
         this.title = entity.getTitle();
         this.text = entity.getText();
     }
