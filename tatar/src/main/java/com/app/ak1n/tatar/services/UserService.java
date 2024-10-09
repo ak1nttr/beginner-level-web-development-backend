@@ -2,11 +2,15 @@ package com.app.ak1n.tatar.services;
 
 import com.app.ak1n.tatar.entities.User;
 import com.app.ak1n.tatar.repository.UserRepository;
+import com.app.ak1n.tatar.requests.UserCreateRequest;
+import com.app.ak1n.tatar.requests.UserUpdateRequest;
+import com.app.ak1n.tatar.responses.UserResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -15,22 +19,31 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers(){
+        List<User> userList = userRepository.findAll();
+
+        return userList
+                .stream()
+                .map(user -> new UserResponse(user))
+                .collect(Collectors.toList());
     }
-    public User saveNewUser(@RequestBody User newUser){
-        return userRepository.save(newUser);
+    public UserResponse saveNewUser(@RequestBody UserCreateRequest newUserCreateRequest){
+        User userToSave = new User();
+        userToSave.setUsername(newUserCreateRequest.getUsername());
+        userToSave.setPassword(newUserCreateRequest.getPassword());
+        User savedUser = userRepository.save(userToSave);
+
+        return new UserResponse(savedUser);
     }
     public User getOneUserById(Long id){
         return userRepository.findById(id).orElse(null);
     }
-    public User updateOneUser(Long id , User newUser){
+    public User updateOneUser(Long id , UserUpdateRequest newUserUpdateRequest){
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
             User foundUser = user.get();
-            foundUser.setUserName(newUser.getUserName());
-            foundUser.setPassword(newUser.getPassword());
-            foundUser.setId(newUser.getId());
+            foundUser.setUsername(newUserUpdateRequest.getUsername());
+            foundUser.setPassword(newUserUpdateRequest.getPassword());
             return  userRepository.save(foundUser);
         }
         else return null;

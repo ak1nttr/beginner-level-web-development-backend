@@ -1,6 +1,9 @@
 package com.app.ak1n.tatar.controllers;
 
 import com.app.ak1n.tatar.entities.User;
+import com.app.ak1n.tatar.requests.UserCreateRequest;
+import com.app.ak1n.tatar.requests.UserUpdateRequest;
+import com.app.ak1n.tatar.responses.UserResponse;
 import com.app.ak1n.tatar.services.UserService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -15,14 +18,14 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers(){
+    public List<UserResponse> getAllUsers(){
         return userService.getAllUsers();
     }
 
 
     @PostMapping
-    public User createUser(@RequestBody User newUser){
-        return userService.saveNewUser(newUser);
+    public UserResponse createUser(@RequestBody UserCreateRequest newUserCreateRequest){
+        return userService.saveNewUser(newUserCreateRequest);
     }
 
     @GetMapping("/{userId}")
@@ -31,11 +34,9 @@ public class UserController {
     }
 
 
-
-
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId , @RequestBody User newUser){
-        return userService.updateOneUser(userId,newUser);
+    public User updateUser(@PathVariable Long userId , @RequestBody UserUpdateRequest newUserUpdateRequest){
+        return userService.updateOneUser(userId,newUserUpdateRequest);
     }
     @DeleteMapping("/{userId}")
     public void deleteOneUser(@PathVariable Long userId){
