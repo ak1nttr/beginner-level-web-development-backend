@@ -2,11 +2,13 @@ package com.app.ak1n.tatar.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "comment")
 @Entity
 public class Comment {

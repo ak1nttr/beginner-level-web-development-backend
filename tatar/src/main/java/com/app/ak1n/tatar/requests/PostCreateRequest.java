@@ -1,8 +1,10 @@
 package com.app.ak1n.tatar.requests;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class PostCreateRequest {
 
     String text;

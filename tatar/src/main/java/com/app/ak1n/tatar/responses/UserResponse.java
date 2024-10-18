@@ -1,9 +1,11 @@
 package com.app.ak1n.tatar.responses;
 
 import com.app.ak1n.tatar.entities.User;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserResponse {
     Long id;
     String username;

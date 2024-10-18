@@ -3,11 +3,13 @@ package com.app.ak1n.tatar.responses;
 
 import com.app.ak1n.tatar.entities.Like;
 import com.app.ak1n.tatar.entities.Post;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class PostResponse {
 
 
