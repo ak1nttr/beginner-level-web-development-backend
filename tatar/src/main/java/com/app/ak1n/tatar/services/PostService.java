@@ -7,6 +7,7 @@ import com.app.ak1n.tatar.requests.PostCreateRequest;
 import com.app.ak1n.tatar.requests.PostUpdateRequest;
 
 import com.app.ak1n.tatar.responses.PostResponse;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,21 +19,26 @@ public class PostService {
 
         private final PostRepository postRepository;
         private final UserService userService;
+        private final LikeService likeService;
 
-        public PostService(PostRepository postRepository, UserService userService) {
+        public PostService(PostRepository postRepository, UserService userService ,@Lazy LikeService likeService){
         this.postRepository = postRepository;
         this.userService=userService;
+        this.likeService = likeService;
         }
         public List<PostResponse> getAll(Optional<Long> userId){
             List<Post> list;
-
             if(userId.isPresent()){
             list = postRepository.findByUserId(userId);
             }else {
             list = postRepository.findAll();
             }
             return list.stream()
-                    .map(post -> new PostResponse(post))
+                    .map(post -> {
+                        PostResponse pr = new PostResponse(post);
+                        pr.setLikes(likeService.getAllLikesWithParam(Optional.empty(), Optional.of(post.getId())));
+                        return pr;
+                    })
                     .collect(Collectors.toList());
         }
 

@@ -1,11 +1,10 @@
 package com.app.ak1n.tatar.requests;
 
+import lombok.*;
 
-import com.app.ak1n.tatar.entities.Post;
-import com.app.ak1n.tatar.entities.User;
-import lombok.Data;
-
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class CommentCreateRequest {
         //comment creating properties
     Long id;
