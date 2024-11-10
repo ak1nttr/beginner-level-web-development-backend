@@ -18,7 +18,7 @@ public class PostResponse {
     String userName;
     String title;
     String text;
-    List<Like> likes;
+    List<LikeResponse> likes;
 
     public PostResponse(Post entity){
         this.id = entity.getId();

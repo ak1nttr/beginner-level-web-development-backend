@@ -6,6 +6,7 @@ import com.app.ak1n.tatar.entities.User;
 import com.app.ak1n.tatar.repository.CommentRepository;
 import com.app.ak1n.tatar.requests.CommentCreateRequest;
 import com.app.ak1n.tatar.requests.CommentUpdateRequest;
+import com.app.ak1n.tatar.responses.CommentResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,64 +28,71 @@ public class CommentService {
         this.postService = postService;
     }
 
-    public List<Comment> getAllCommentsWithParam(Optional<Long> userId,
+
+    public List<CommentResponse> getAllCommentsWithParam(Optional<Long> userId,
                                                  Optional<Long> postId){
 
         if (userId.isPresent() && postId.isPresent()) {
-            return commentRepository.findByUserIdAndPostId(userId.get() , postId.get());
-        } // if all parameters exist
+            List<Comment> comments = commentRepository.findByUserIdAndPostId(userId.get(), postId.get());
+            return comments.stream().map(CommentResponse::new).toList();
+        }
         else if (userId.isPresent()){
-            return commentRepository.findByUserId(userId.get());
-        } //if only user id is given as param
+            List<Comment> comments = commentRepository.findByUserId(userId.get());
+            return comments.stream().map(CommentResponse::new).toList();
+        }
         else if (postId.isPresent()) {
-            return commentRepository.findByPostId(postId.get());
-        }// if we only have post id
+            List<Comment> comments = commentRepository.findByPostId(postId.get());
+            return comments.stream().map(CommentResponse::new).toList();
+        }
         else
-            return commentRepository.findAll();
-
+            return commentRepository.findAll().stream().map(CommentResponse::new).toList();
     }
 
 
-    public Comment getCommentById(Long commentId) {
-        return commentRepository.findById(commentId).orElse(null);
+    public CommentResponse getCommentById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment != null)
+            return new CommentResponse(comment);
+        else throw new IllegalArgumentException("Comment not found with id: " + commentId);
     }
 
-    public Comment createOneComment(CommentCreateRequest commentCreateRequest) {
+    public CommentResponse createOneComment(CommentCreateRequest commentCreateRequest) {
         // create a new one and assign all the values to it
         // then return
         User createdUser = userService.getOneUserById(commentCreateRequest.getUserId());
         Post createdPost = postService.getPostById(commentCreateRequest.getPostId());
 
-        if  (   createdPost != null &&
-                createdUser != null ){
-
+        if  (createdPost != null && createdUser != null){
             Comment commentToGo = new Comment();
-            commentToGo.setId(commentCreateRequest.getId());
             commentToGo.setText(commentCreateRequest.getText());
             commentToGo.setUser(createdUser);
             commentToGo.setPost(createdPost);
-            return commentRepository.save(commentToGo);
+            commentRepository.save(commentToGo);
+            return new CommentResponse(commentToGo);
         }
-        else return null;
+        else if(createdPost == null){
+            throw new IllegalArgumentException("Post not found with id: " + commentCreateRequest.getPostId());
+        }
+        else {
+            throw new IllegalArgumentException("User not found with id: " + commentCreateRequest.getUserId());
+        }
     }
 
-    public Comment updateCommentById(CommentUpdateRequest request,
-                                    Long commentId) {
-        Optional<Comment> commentOptional = commentRepository.findById(commentId);
-        if (commentOptional.isPresent()) {
-            Comment commentToGo = commentOptional.get();
+    public CommentResponse updateCommentById(CommentUpdateRequest request,
+                                             Long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent()) {
+            Comment commentToGo = comment.get();
             commentToGo.setText(request.getText());
-            return commentRepository.save(commentToGo);
-        }else {
-            // custom exception
-            return null;
-        }
+            commentRepository.save(commentToGo);
+            return new CommentResponse(commentToGo);
+        }else throw new IllegalArgumentException("Comment not found with id: " + commentId);
     }
 
-    public void deleteCommentById(Long commentId) {
-        Optional<Comment> commentOptional = commentRepository.findById(commentId);
-        if (commentOptional.isPresent()) {
+    public void deleteCommentById(Long commentId){
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent())
             commentRepository.deleteById(commentId);
-        }
+        else throw new IllegalArgumentException("Comment not found with id: " + commentId);
     }
 }

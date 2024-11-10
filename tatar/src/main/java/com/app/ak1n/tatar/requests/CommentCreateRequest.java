@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 public class CommentCreateRequest {
         //comment creating properties
-    Long id;
     Long postId;
     Long userId;
     String text;
