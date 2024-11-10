@@ -6,7 +6,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class LikeCreateRequest {
-    Long id;
     Long postId;
     Long userId;
 }
